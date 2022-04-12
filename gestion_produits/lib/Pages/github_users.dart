@@ -16,9 +16,9 @@ class _GitHubUsersState extends State<GitHubUsers> {
   TextEditingController textEditingController = new TextEditingController();
 
   void searchGithubUser(userKey) {
-    String url = "https://api.github.com/search/users?q=${userKey}&per_page=10&page=0";
-    http.get(Uri.parse(url))
-        .then((response) {
+    String url =
+        "https://api.github.com/search/users?q=${userKey}&per_page=10&page=0";
+    http.get(Uri.parse(url)).then((response) {
       setState(() {
         users = json.decode(response.body);
       });
@@ -30,59 +30,60 @@ class _GitHubUsersState extends State<GitHubUsers> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Github Users"),
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor: Colors.green,
-        ),
-        body: Padding(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: [
+      appBar: AppBar(
+        title: Text("Github Users"),
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.green,
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
             Row(
-            children: [
+              children: [
+                Expanded(
+                    child: TextFormField(
+                  controller: textEditingController,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.green.shade400)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide(color: Colors.green.shade400)),
+                    prefixIcon: const Icon(Icons.search),
+                  ),
+                )),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      searchGithubUser(textEditingController.text);
+                    });
+                  },
+                  icon: Icon(Icons.search),
+                )
+              ],
+            ),
             Expanded(
-            child: TextFormField(
-              controller: textEditingController,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(color: Colors.green.shade400)),
-
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide(color: Colors.green.shade400)),
-
-                prefixIcon: const Icon(Icons.search),
+              child: ListView.builder(
+                itemCount: users == null || users["items"] == null
+                    ? 0
+                    : users["items"].length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage:
+                          NetworkImage(users["items"][index]["avatar_url"]),
+                    ),
+                    title: Text(users["items"][index]["login"]),
+                  );
+                },
               ),
-            )),
-    IconButton(
-    onPressed: () {
-    setState(() {
-    searchGithubUser(textEditingController.text);
-    });
-    },
-    icon: Icon(Icons.search),
-    )
-    ],
-    ),
-    Expanded(
-    child: ListView.builder(
-
-    itemCount:users==null||users["items"]==null?0: users["items"].length,
-    itemBuilder: (context, index) {
-    return ListTile(
-    leading: CircleAvatar(
-    backgroundImage: NetworkImage(users["items"][index]["avatar_url"]),
-    ),
-    title: Text(users["items"][index]["login"]),
-    );
-    },),
-    )
-    ],
-    ),
-    ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

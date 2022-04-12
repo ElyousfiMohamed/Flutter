@@ -39,33 +39,36 @@ class _NewsState extends State<News> {
         backgroundColor: Colors.green,
       ),
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                    child: TextFormField(
-                  controller: textEditingController,
-                  decoration: InputDecoration(
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(color: Colors.green.shade400)),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide(color: Colors.green.shade400)),
-                    prefixIcon: const Icon(Icons.search),
-                  ),
-                )),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      searchNews(textEditingController.text);
-                    });
-                  },
-                  icon: const Icon(Icons.search),
-                )
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0,0,0,15),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: TextFormField(
+                    controller: textEditingController,
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(color: Colors.green.shade400)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: BorderSide(color: Colors.green.shade400)),
+                      prefixIcon: const Icon(Icons.search),
+                    ),
+                  )),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        searchNews(textEditingController.text);
+                      });
+                    },
+                    icon: const Icon(Icons.search),
+                  )
+                ],
+              ),
             ),
             Expanded(
                 child: ListView.builder(
@@ -75,8 +78,10 @@ class _NewsState extends State<News> {
                     itemBuilder: (context, index) {
                       if (news["articles"][index]["urlToImage"] != null &&
                           news["articles"][index]["title"] != null) {
-                        return Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                        return Card(
+                          elevation: 1,
+                          child: Container(
+                            margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                             child: ListTile(
                               onTap: (){
                                 Navigator.push(
@@ -86,13 +91,11 @@ class _NewsState extends State<News> {
                                   )
                                 );
                               },
-                              leading: CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    news["articles"][index]["urlToImage"]),
-                                radius: 30,
-                              ),
+                              leading: Image.network(news["articles"][index]["urlToImage"],width: 100,),
                               title: Text(news["articles"][index]["title"]),
-                            ));
+                            ),
+                          ),
+                        );
                       } else {
                         return const Padding(
                           padding: EdgeInsets.fromLTRB(0, 8, 0, 8),

@@ -1,29 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gestion_produits/Entity/Product.dart';
+import 'package:provider/provider.dart';
 
-class Produits extends StatefulWidget {
-  const Produits({Key? key}) : super(key: key);
+import '../Providers/list_produit_state.dart';
 
-  @override
-  State<Produits> createState() => _ProduitsState();
-}
-
-class _ProduitsState extends State<Produits> {
-  TextEditingController nomProdController = TextEditingController();
-  TextEditingController prixProdController = TextEditingController();
-  List<Product> products = [];
-
-  ajouterProduit() {
-    Product p =
-    Product(nomProdController.text, double.parse(prixProdController.text));
-    products.add(p);
-  }
-
-  supprimerProduit(int index) {
-    products.removeAt(index);
-  }
-
-  int productsNumber = 0;
+class Produits extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +34,8 @@ class _ProduitsState extends State<Produits> {
                   padding: const EdgeInsets.fromLTRB(0, 20, 50, 0),
                   child: TextField(
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.drive_file_rename_outline,color: Colors.green),
+                      prefixIcon: Icon(Icons.drive_file_rename_outline,
+                          color: Colors.green),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: const BorderSide(color: Colors.green),
@@ -63,7 +45,9 @@ class _ProduitsState extends State<Produits> {
                         borderSide: const BorderSide(color: Colors.green),
                       ),
                     ),
-                    controller: nomProdController,
+                    controller:
+                        Provider.of<ListProduitState>(context, listen: false)
+                            .nomProdController,
                   ),
                 ),
               )
@@ -82,8 +66,11 @@ class _ProduitsState extends State<Produits> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 10, 50, 0),
                   child: TextField(
-                    decoration:  InputDecoration(
-                      prefixIcon: Icon(Icons.price_change,color: Colors.green,),
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.price_change,
+                        color: Colors.green,
+                      ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
                         borderSide: BorderSide(color: Colors.green),
@@ -93,7 +80,9 @@ class _ProduitsState extends State<Produits> {
                         borderSide: BorderSide(color: Colors.green),
                       ),
                     ),
-                    controller: prixProdController,
+                    controller:
+                        Provider.of<ListProduitState>(context, listen: false)
+                            .prixProdController,
                   ),
                 ),
               )
@@ -108,9 +97,8 @@ class _ProduitsState extends State<Produits> {
               MaterialButton(
                   color: Colors.green,
                   onPressed: () {
-                    setState(() {
-                      ajouterProduit();
-                    });
+                    Provider.of<ListProduitState>(context, listen: false)
+                        .ajouterProduit();
                   },
                   child: const Icon(
                     Icons.add,
@@ -122,41 +110,39 @@ class _ProduitsState extends State<Produits> {
             margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
             child: const Divider(height: 50, color: Colors.green),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Le nombre des produits dans la liste : " +
-                  products.length.toString())
-            ],
-          ),
-          const SizedBox(
-            height: 20,
-          ),
           Expanded(
-            child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: products.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        child: Text(
-                          products[index].nom.substring(0, 1),
-                          style: const TextStyle(color: Colors.white),
+            child: Consumer<ListProduitState>(
+              builder: (context, listeProduitsState, child) {
+                return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: listeProduitsState.products.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            child: Text(
+                              listeProduitsState.products[index].nom
+                                  .substring(0, 1),
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            backgroundColor: Colors.green,
+                          ),
+                          trailing: IconButton(
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {
+                                listeProduitsState.supprimerProduit(index);
+                                ;
+                              }),
+                          title: Text(
+                              listeProduitsState.products[index].toString()),
                         ),
-                        backgroundColor: Colors.green,
-                      ),
-                      trailing: IconButton(
-                          icon: const Icon(Icons.delete,color: Colors.green,),
-                          onPressed: () {
-                            setState(() {
-                              supprimerProduit(index);
-                            });
-                          }),
-                      title: Text(products[index].toString()),
-                    ),
-                  );
-                }),
+                      );
+                    });
+              },
+            ),
           )
         ],
       ),
