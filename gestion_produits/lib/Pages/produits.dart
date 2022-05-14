@@ -46,8 +46,9 @@ class Produits extends StatelessWidget {
                       ),
                     ),
                     controller:
-                        Provider.of<ListProduitState>(context, listen: false)
-                            .nomProdController,
+                    Provider
+                        .of<ListProduitState>(context, listen: false)
+                        .nomProdController,
                   ),
                 ),
               )
@@ -81,8 +82,9 @@ class Produits extends StatelessWidget {
                       ),
                     ),
                     controller:
-                        Provider.of<ListProduitState>(context, listen: false)
-                            .prixProdController,
+                    Provider
+                        .of<ListProduitState>(context, listen: false)
+                        .prixProdController,
                   ),
                 ),
               )
@@ -103,9 +105,19 @@ class Produits extends StatelessWidget {
                   child: const Icon(
                     Icons.add,
                     color: Colors.white,
-                  ))
+                  )),
             ],
           ),
+          SizedBox(
+            height: 10,
+          ),
+          Consumer<ListProduitState>(
+              builder: (context, listeProduitsState, child) {
+                return Text("Nombre d'elements dans la liste : " +
+                    Provider.of<ListProduitState>(context, listen: false)
+                        .products.length
+                        .toString());
+              }),
           Container(
             margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
             child: const Divider(height: 50, color: Colors.green),
@@ -134,7 +146,6 @@ class Produits extends StatelessWidget {
                               ),
                               onPressed: () {
                                 listeProduitsState.supprimerProduit(index);
-                                ;
                               }),
                           title: Text(
                               listeProduitsState.products[index].toString()),

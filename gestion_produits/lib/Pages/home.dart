@@ -15,19 +15,58 @@ class Home extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.green,
       ),
-      body: Center(
-        child: MaterialButton(
-          color: Colors.green,
-          onPressed: () {
-            Navigator.pushNamed(context, "/produits");
-          },
-          child: const Padding(
-            padding: EdgeInsets.fromLTRB(10,15,10,15),
-            child: Text("Produits",style: TextStyle(color: Colors.white)),
+      body: Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(80,200,10,0),
+              child: Column(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/produits");
+                    },
+                    child:  const CircleAvatar(
+                      backgroundImage: AssetImage("images/1 (1).jpg"),
+                      radius: 50,),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, "/news");
+                    },
+                    child:  const CircleAvatar(
+                      backgroundImage: AssetImage("images/1 (2).jpg"),
+                      radius: 55,),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10,190,80,0),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/github_users");
+                  },
+                  child:  const CircleAvatar(
+                    backgroundImage: AssetImage("images/1 (3).jpg"),
+                    radius: 55,),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/covid");
+                  },
+                  child:  const CircleAvatar(
+                    backgroundImage: AssetImage("images/1 (4).jpg"),
+                    radius: 65,),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
-
 }

@@ -1,37 +1,10 @@
-import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:gestion_produits/Providers/list_covid_state.dart';
+import 'package:provider/provider.dart';
 
-class Covid extends StatefulWidget {
-  const Covid({Key? key}) : super(key: key);
-
-  @override
-  State<Covid> createState() => _CovidState();
-}
-
-class _CovidState extends State<Covid> {
-  var cases = null;
-  var countries = null;
-  String image = "";
-  String code = "";
-
-  TextEditingController textEditingController = TextEditingController();
-
-  void searchNews(country) async{
-    String url = "https://covid-api.mmediagroup.fr/v1/cases?country=$country";
-
-    http.get(Uri.parse(url)).then((response)  {
-      setState(() {
-        cases = json.decode(response.body);
-        image = "http://www.geognos.com/api/en/countries/flag/${cases["All"]["abbreviation"]}.png";
-      });
-    }).catchError((onError) {
-      print(onError);
-    });
-  }
-
+class Covid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +22,13 @@ class _CovidState extends State<Covid> {
               children: [
                 Expanded(
                     child: TextFormField(
-                  controller: textEditingController,
+                      onChanged : (String value) async {
+                        Provider.of<ListCovidtState>(context, listen: false)
+                            .searchCovid(value);
+                      },
+                  controller:
+                      Provider.of<ListCovidtState>(context, listen: false)
+                          .textEditingController,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -60,35 +39,36 @@ class _CovidState extends State<Covid> {
                     prefixIcon: const Icon(Icons.search),
                   ),
                 )),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      searchNews(textEditingController.text);
-                    });
-                  },
-                  icon: const Icon(Icons.search),
-                )
               ],
             ),
             Expanded(
-                child: ListView.builder(
-                    itemCount: cases == null || cases["All"] == null
-                        ? 0
-                        : 1,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              // backgroundImage: NetworkImage(cases["All"][index]["urlToImage"]),
-                              backgroundImage: NetworkImage(image),
-                              radius: 30,
-                            ),
-                            title: Text("Country : "+cases["All"]["country"].toString()
-                                        + "\nConfirmed cases: "+cases["All"]["confirmed"].toString()
-                                        + "\nDeaths cases: "+cases["All"]["deaths"].toString()),
-                          ));
-                    }))
+                  child: Consumer<ListCovidtState>(
+                  builder: (context, ListCovidtState, child) {
+                    return ListView.builder(
+                        itemCount: ListCovidtState.cases == null ||
+                            ListCovidtState.cases["All"] == null ? 0 : 1,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  // backgroundImage: NetworkImage(cases["All"][index]["urlToImage"]),
+                                  backgroundImage: NetworkImage(
+                                      ListCovidtState.image),
+                                  radius: 30,
+                                ),
+                                title: Text("Country : " +
+                                    ListCovidtState.cases["All"]["country"]
+                                        .toString() +
+                                    "\nConfirmed cases: " +
+                                    ListCovidtState.cases["All"]["confirmed"]
+                                        .toString() +
+                                    "\nDeaths cases: " +
+                                    ListCovidtState.cases["All"]["deaths"]
+                                        .toString()),
+                              ));
+                        });
+                  }))
           ],
         ),
       ),

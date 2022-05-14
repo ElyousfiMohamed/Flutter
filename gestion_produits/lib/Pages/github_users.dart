@@ -2,31 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gestion_produits/Providers/list_github_state.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-class GitHubUsers extends StatefulWidget {
-  const GitHubUsers({Key? key}) : super(key: key);
-
-  @override
-  State<GitHubUsers> createState() => _GitHubUsersState();
-}
-
-class _GitHubUsersState extends State<GitHubUsers> {
-  var users = null;
-  TextEditingController textEditingController = new TextEditingController();
-
-  void searchGithubUser(userKey) {
-    String url =
-        "https://api.github.com/search/users?q=${userKey}&per_page=10&page=0";
-    http.get(Uri.parse(url)).then((response) {
-      setState(() {
-        users = json.decode(response.body);
-      });
-    }).catchError((onError) {
-      print(onError);
-    });
-  }
-
+class GitHubUsers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +24,13 @@ class _GitHubUsersState extends State<GitHubUsers> {
               children: [
                 Expanded(
                     child: TextFormField(
-                  controller: textEditingController,
+                    onChanged : (String value) async {
+                      Provider.of<ListGithubState>(context, listen: false)
+                          .searchGithubUser(value);
+                    },
+                  controller:
+                      Provider.of<ListGithubState>(context, listen: false)
+                          .textEditingController,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -55,31 +41,28 @@ class _GitHubUsersState extends State<GitHubUsers> {
                     prefixIcon: const Icon(Icons.search),
                   ),
                 )),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      searchGithubUser(textEditingController.text);
-                    });
-                  },
-                  icon: Icon(Icons.search),
-                )
               ],
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: users == null || users["items"] == null
-                    ? 0
-                    : users["items"].length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(users["items"][index]["avatar_url"]),
-                    ),
-                    title: Text(users["items"][index]["login"]),
-                  );
-                },
-              ),
+              child: Consumer<ListGithubState>(
+                  builder: (context, ListGithubState, child) {
+                return ListView.builder(
+                  itemCount: ListGithubState.users == null ||
+                          ListGithubState.users["items"] == null
+                      ? 0
+                      : ListGithubState.users["items"].length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(ListGithubState
+                            .users["items"][index]["avatar_url"]),
+                      ),
+                      title:
+                          Text(ListGithubState.users["items"][index]["login"]),
+                    );
+                  },
+                );
+              }),
             )
           ],
         ),
