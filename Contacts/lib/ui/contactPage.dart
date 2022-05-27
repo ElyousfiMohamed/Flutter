@@ -1,8 +1,11 @@
+import 'package:contacts/bloc/messageBloc.dart';
+import 'package:contacts/events/messageEvent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/contactBloc.dart';
 import '../events/contactEvent.dart';
+import '../model/requestState.dart';
 import '../state/contactState.dart';
 
 class ContactsPage extends StatelessWidget {
@@ -112,6 +115,10 @@ class ContactsPage extends StatelessWidget {
                                 : "")],
                       ),
                       trailing: Text("Groupe : " + state.contacts[index].group),
+                      onTap: (){
+                        context.read<MessageBloc>().add(ContactMessageEvent(contact: state.contacts[index]));
+                        Navigator.pushNamed(context, "/messages",arguments:state.contacts[index] );
+                      },
                     );
                   });
             }

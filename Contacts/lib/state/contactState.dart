@@ -1,6 +1,7 @@
+import 'package:contacts/model/requestState.dart';
+
 import '../model/contact.dart';
 
-enum RequestState { Loaded, Loading, Error, None}
 class ContactState {
 
   List<Contact> contacts = [];

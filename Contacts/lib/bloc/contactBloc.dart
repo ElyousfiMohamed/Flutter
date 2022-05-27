@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../events/contactEvent.dart';
+import '../model/requestState.dart';
 import '../repository/contactRepository.dart';
 import '../state/contactState.dart';
 

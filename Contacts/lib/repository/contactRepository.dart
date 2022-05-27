@@ -4,7 +4,6 @@ import '../model/contact.dart';
 class ContactRepository {
 
   List<Contact> contacts = [
-
     Contact(id: 1, name: "Mohamed", group: "BDCC", profile: "simo", email: "simo@gmail.com", lastMessage: "hey", lastMessageDate: "14/05/2022"),
     Contact(id: 2, name: "Oussama", group: "GLSID", profile: "Oussama", email: "Oussama@gmail.com", lastMessage: "Bjr", lastMessageDate: "13/05/2022"),
     Contact(id: 3, name: "Tariq", group: "BDCC", profile: "Tariq", email: "Tariq@gmail.com", lastMessage: "cv", lastMessageDate: "15/05/2022"),
